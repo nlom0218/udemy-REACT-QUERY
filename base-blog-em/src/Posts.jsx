@@ -9,6 +9,9 @@ async function fetchPosts() {
   const response = await fetch(
     'https://jsonplaceholder.typicode.com/posts?_limit=10&_page=0'
   );
+
+  if (!response.ok) throw Error('오마이갓!');
+
   return response.json();
 }
 
@@ -17,9 +20,18 @@ export function Posts() {
   const [selectedPost, setSelectedPost] = useState(null);
 
   // replace with useQuery
-  const { data } = useQuery(['posts'], fetchPosts);
+  const { data, isError, error, isLoading } = useQuery(['posts'], fetchPosts);
 
-  if (!data) return <div>Loading...</div>;
+  if (isLoading) return <h3>Loading...</h3>;
+
+  // error를 보여주기 전 react-query는 기본적으로 4번의 fetching를 하여 해당 데이터를 가져올 수 없다고 결정한다.
+  if (isError)
+    return (
+      <>
+        <h3>Error...</h3>
+        <p>{error.toString()}</p>
+      </>
+    );
 
   return (
     <>
