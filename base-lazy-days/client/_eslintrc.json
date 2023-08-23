@@ -30,7 +30,8 @@
     "jsx-a11y",
     "@typescript-eslint",
     "simple-import-sort",
-    "prettier"
+    "prettier",
+    "@tanstack/query"
   ],
   "env": {
     "browser": true,
@@ -66,6 +67,8 @@
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": "error",
     "react/jsx-one-expression-per-line": "off",
-    "react/jsx-curly-newline": "off"
+    "react/jsx-curly-newline": "off",
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error"
   }
 }
