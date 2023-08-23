@@ -1,6 +1,7 @@
 // @ts-nocheck
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
@@ -70,7 +71,25 @@ export function useAppointments(): UseAppointments {
   //
   //    2. The getAppointments query function needs monthYear.year and
   //       monthYear.month
-  const appointments = {};
+
+  const { data: appointments } = useQuery({
+    queryKey: [queryKeys.appointments, `${monthYear.year}${monthYear.month}`],
+    queryFn: () => getAppointments(monthYear.year, monthYear.month),
+    suspense: true,
+  });
+
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const newMonthYear = getNewMonthYear(monthYear, 1);
+
+    queryClient.prefetchQuery({
+      queryKey: [
+        queryKeys.appointments,
+        `${newMonthYear.year}${newMonthYear.month}`,
+      ],
+      queryFn: () => getAppointments(newMonthYear.year, newMonthYear.month),
+    });
+  }, [monthYear, queryClient]);
 
   /** ****************** END 3: useQuery  ******************************* */
 
