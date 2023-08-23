@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 async function fetchComments(postId) {
   const response = await fetch(
@@ -32,6 +32,18 @@ export function PostDetail({ post }) {
     cacheTime: 10000,
   });
 
+  const deleteMutation = useMutation((postId) => deletePost(postId));
+
+  const updateTitleMutation = useMutation({
+    mutationFn: (postId) => updatePost(postId),
+    onSuccess: (data, variables, context) => {
+      console.log(data, variables, context);
+    },
+    onError: (data, variables, context) => {
+      console.log(data, variables, context);
+    },
+  });
+
   if (isError)
     return (
       <>
@@ -43,7 +55,19 @@ export function PostDetail({ post }) {
   return (
     <>
       <h3 style={{ color: 'blue' }}>{post.title}</h3>
-      <button>Delete</button> <button>Update title</button>
+      <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
+      {deleteMutation.isError && (
+        <p style={{ color: 'red' }}>Error deleting the post</p>
+      )}
+      {deleteMutation.isLoading && (
+        <p style={{ color: 'purple' }}>Deleting the post</p>
+      )}
+      {deleteMutation.isSuccess && (
+        <p style={{ color: 'green' }}>Post has been delete</p>
+      )}
+      <button onClick={() => updateTitleMutation.mutate(post.id)}>
+        Update title
+      </button>
       <p>{post.body}</p>
       <h4>Comments</h4>
       {data.map((comment) => (

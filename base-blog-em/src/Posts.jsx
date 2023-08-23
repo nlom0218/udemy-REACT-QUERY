@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Suspense, useEffect, useState } from 'react';
 
 import { PostDetail } from './PostDetail';
